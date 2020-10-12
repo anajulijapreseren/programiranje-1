@@ -1,3 +1,4 @@
+import re
 ###############################################################################
 # Hvaležni medved
 #
@@ -25,7 +26,9 @@ medved. Zvrhano zibelko sladkih hrušk mi je prinesel za en sam izdrt trn"."""
 # >>> find_words(test_text, 'de')
 # {'izdere', 'debel', 'oddide', 'začudeno'}
 ###############################################################################
-
+def find_words(niz, podniz):
+    pat = r"\b\w*" + podniz + r"\w*\b"  #če daš namesto \w* .*, bo pobralo VSE, tudi presledke!!
+    return set(re.findall(pat, niz))
 
 ###############################################################################
 # 2) Sestavite funkcijo [find_prefix], ki vrne množico vseh besed, ki se
@@ -34,6 +37,7 @@ medved. Zvrhano zibelko sladkih hrušk mi je prinesel za en sam izdrt trn"."""
 # >>> find_prefix(test_text, 'zi')
 # {'zibala', 'zibel', 'zibelko'}
 ###############################################################################
+
 
 
 ###############################################################################
@@ -52,3 +56,9 @@ medved. Zvrhano zibelko sladkih hrušk mi je prinesel za en sam izdrt trn"."""
 # >>> double_letters('A volunteer is worth twenty pressed men.')
 # {'volunteer', 'pressed'}
 ###############################################################################
+def double_letters(niz, podniz):
+    pat = r"\b(\w*(\w)\2\w*)\b" #prva skupina je tista katere oklepaj najprej zadanem
+    return set(j[0] for j in re.findall(pat, niz))
+
+#uporabljaj named groups!!!
+
