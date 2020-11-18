@@ -3,6 +3,7 @@ import os
 import requests
 import re
 
+#poskus
 ###############################################################################
 # Najprej definirajmo nekaj pomožnih orodij za pridobivanje podatkov s spleta.
 ###############################################################################
@@ -106,10 +107,13 @@ def get_dict_from_ad_block(block):
     """
     rx = re.compile(r'<h3.*>(?P<name>.*?)</a></h3>'
                     r'.*?"pubdate">(?P<time>.*?)</time>'
-                    r'.*?<strong class="price price--hrk">\s*?(?P<price>\d*)&',
+                    r'.*?<strong class="price price--hrk">\s*?(?P<price>.*?)(&|</strong>)',
                     re.DOTALL)
     data = re.search(rx, block)
+    #print(data)
+    #print(block)
     ad_dict = data.groupdict()
+
 
     # Ker nimajo vsi oglasi podatka o lokaciji, to rešimo z dodatnim vzorcem
     rloc = re.compile(r'Lokacija: </span>(?P<location>.*?)<br />')
