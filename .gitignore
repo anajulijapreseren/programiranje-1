@@ -17,7 +17,11 @@ _build
 *.synctex.gz
 
 .DS_Store
+<<<<<<< HEAD
 
 venv
 env
 node_modules
+=======
+02-zajem-podatkov/vaje/zajeti_podatki/index.html
+>>>>>>> af62eb5a34c4bb74c24a7a01e73370416bf6c0df

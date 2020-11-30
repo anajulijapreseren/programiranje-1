@@ -8,7 +8,8 @@
  - : int = 4
 [*----------------------------------------------------------------------------*)
 
-let rec square = ()
+let rec square x = x * x
+
 
 (*----------------------------------------------------------------------------*]
  Funkcija [middle_of_triple] vrne srednji element trojice.
@@ -17,7 +18,10 @@ let rec square = ()
  - : bool = false
 [*----------------------------------------------------------------------------*)
 
-let rec middle_of_triple = ()
+let rec middle_of_triple trojica = 
+  let (x, y, z) = trojica in
+  y
+
 
 (*----------------------------------------------------------------------------*]
  Funkcija [starting_element] vrne prvi element danega seznama. V primeru
@@ -27,7 +31,9 @@ let rec middle_of_triple = ()
  - : int = 1
 [*----------------------------------------------------------------------------*)
 
-let rec starting_element = ()
+let rec starting_element = function
+  | [] -> failwith "List too short."
+  | x :: xs -> x
 
 (*----------------------------------------------------------------------------*]
  Funkcija [multiply] zmnoži vse elemente seznama. V primeru praznega seznama
@@ -37,8 +43,9 @@ let rec starting_element = ()
  - : int = 48
 [*----------------------------------------------------------------------------*)
 
-let rec multiply = ()
-
+let rec multiply sez = 
+  | [] -> 1
+  | x :: xs -> x * multiply xs
 (*----------------------------------------------------------------------------*]
  Napišite funkcijo ekvivalentno python kodi:
 
@@ -55,6 +62,8 @@ let rec multiply = ()
 [*----------------------------------------------------------------------------*)
 
 let rec sum_int_pairs = ()
+  | [] -> []
+  | (x, y) :: pairs -> (x + y) :: sum_int_pairs pairs
 
 (*----------------------------------------------------------------------------*]
  Funkcija [get k list] poišče [k]-ti element v seznamu [list]. Številčenje
