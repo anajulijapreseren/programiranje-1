@@ -108,7 +108,7 @@ let is_bst tree =
           | [] -> true
           | [_] -> true
           | x::y::rest -> (x <= y) && (is_sorted (y:: rest)) 
-     in 
+          in 
      is_sorted l
 (*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*]
  V nadaljevanju predpostavljamo, da imajo dvojiška drevesa strukturo BST.
