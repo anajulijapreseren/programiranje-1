@@ -26,7 +26,33 @@
 #     >>> a
 #     [10, 2, 0, 4, 11, 15, 17, 5, 18]
 ###############################################################################
+def pivot_moj(a, s, e):
+    zacetek = a[s]
+    sez = [zacetek]
+    for i in a[s+1:e+1]:
+        if i <= zacetek:
+            sez = [i] + sez
+        else:
+            sez = sez + [i]
+    a = a[:s] + sez + a[e+1:]
+    return a.index(zacetek)
 
+def pivot(a, start, end):
+    p = a[start]
+    left = start
+    right = end
+    #Pustimo si mesto za pivot na a[start]
+    #vse, kar delamo, delamo na left + 1
+    while left != right:
+        if a[left] <= p:
+            left += 1
+        elif p < a[right]:
+            right -= 1  
+        else:
+            a[left], a[right] = a[right], a[left] #zamenjam a[left] in a[right]
+
+    a[start], a[left-1]=a[left-1], a[start]
+    return left # lahko bi vrnili tudi desnega, saj sta ista
 
 
 ###############################################################################
@@ -44,7 +70,18 @@
 # jo rešite brez da v celoti uredite tabelo [a].
 ###############################################################################
 
+def k_ti_po_vrsti(a, k, start, stop):
+    pivot_i = pivot(a, start, stop)
+    if pivot_i > k:
+        return k_ti_po_vrsti(a, k, start, pivot_i-1)
+    if pivot_i < k:
+        return k_ti_po_vrsti(a, k, pivot_i + 1, stop)
+    return a[pivot_i]
 
+def kth_element(a, k):
+    if k >= len(a):
+        return None
+    return k_ti_po_vrsti(a, k, 0, len(a)-1)
 
 ###############################################################################
 # Tabelo a želimo urediti z algoritmom hitrega urejanja (quicksort).
@@ -60,7 +97,14 @@
 #     [2, 3, 4, 5, 10, 11, 15, 17, 18]
 ###############################################################################
 
-
+def quicksort(a, start=0, stop= None):
+    if stop is None:
+        stop = len(a) - 1
+    if start >= stop:
+        return
+    pivot_i = pivot(a, start, stop)
+    quicksort(a, start, pivot_i - 1)
+    quicksort(a, pivot_i + 1, stop)
 
 ###############################################################################
 # Če imamo dve urejeni tabeli, potem urejeno združeno tabelo dobimo tako, da
@@ -85,8 +129,24 @@
 #
 ###############################################################################
 
+def zlij(target, begin, end, list_1, list_2):
+    i1 = 0
+    i2 = 0
+    while (i1 < len(list_1) and i2 < len(list_2)):
+        if list_1[i1] <= list_2[i2]:
+            target[begin + i1 + i2] = list_1[i1]
+            i1 += 1
+        else:
+            target[begin + i1 + i2] = list_2[i2]
+            i2 += 1
 
-
+    #če so pri kateremkoli že na koncu ni problema
+    while i1 < len(list_1):
+        target[begin + i1 +i2] = list_1[i1]
+        i1 += 1
+    while i2 < len(list_2):
+        target[begin + i1 +i2] = list_2[i2]
+        i2 += 1
 ###############################################################################
 # Tabelo želimo urediti z zlivanjem (merge sort). 
 # Tabelo razdelimo na polovici, ju rekurzivno uredimo in nato zlijemo z uporabo
@@ -102,3 +162,20 @@
 # >>> mergesort(a)
 # [2, 3, 4, 5, 10, 11, 15, 17, 18]
 ###############################################################################
+
+def mergesort(a, begin=0, end=None):
+    if end is None:
+        end = len(a) 
+
+    if (begin < end - 1):
+        midpoint = (begin + end) // 2
+        mergesort(a, begin, midpoint)
+        mergesort(a, midpoint, end)
+
+        prvi = a[begin:midpoint]
+        drugi = a[midpoint:end]
+
+        zlij(a, begin, end, prvi, drugi)
+
+    else:
+        return a
