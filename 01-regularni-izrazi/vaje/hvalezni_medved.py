@@ -30,6 +30,11 @@ def find_words(niz, podniz):
     pat = r"\b\w*" + podniz + r"\w*\b"  #če daš namesto \w* .*, bo pobralo VSE, tudi presledke!!
     return set(re.findall(pat, niz))
 
+def find_words(text, substring):
+    rx = r'\b\w*' + substring + r'\w*\b'
+    matches = re.findall(rx, text)
+    return set(matches)
+
 ###############################################################################
 # 2) Sestavite funkcijo [find_prefix], ki vrne množico vseh besed, ki se
 #    pojavijo v nizu in imajo dano predpono.
@@ -39,6 +44,10 @@ def find_words(niz, podniz):
 ###############################################################################
 
 
+def find_prefix(text, prefix):
+    r'^'
+    rx = r'\b' + prefix + r'\w*\b'
+    return set(re.findall(rx, text))
 
 ###############################################################################
 # 3) Sestavite funkcijo [find_suffix], ki vrne množico vseh besed, ki se
@@ -49,6 +58,10 @@ def find_words(niz, podniz):
 ###############################################################################
 
 
+def find_suffix(text, suffix):
+    r = r'\b\w*' + suffix + r'\b'
+    return set(re.findall(r, text))
+
 ###############################################################################
 # 4) Sestavite funkcijo [double_letters], ki sprejme niz in vrne množico vseh
 #    besed, ki vsebujejo podvojene črke.
@@ -56,9 +69,9 @@ def find_words(niz, podniz):
 # >>> double_letters('A volunteer is worth twenty pressed men.')
 # {'volunteer', 'pressed'}
 ###############################################################################
-def double_letters(niz, podniz):
-    pat = r"\b(\w*(\w)\2\w*)\b" #prva skupina je tista katere oklepaj najprej zadanem
-    return set(j[0] for j in re.findall(pat, niz))
 
-#uporabljaj named groups!!!
 
+def double_letters(text):
+    rx = r'(\b\w*(\w)\2\w*\b)'
+    matches = re.findall(rx, text)
+    return set([match[0] for match in matches])

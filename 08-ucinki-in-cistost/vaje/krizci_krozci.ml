@@ -34,17 +34,26 @@ type player = X | O
 [*----------------------------------------------------------------------------*)
 
 type field = player option
+<<<<<<< HEAD
 
 type row = field * field * field
 
+=======
+type row = field * field * field
+>>>>>>> c2d130e450ac62cf1d9467eb2e13d4f9db10938f
 type grid = row * row * row
 
 (*----------------------------------------------------------------------------*]
  Definirajte vrednost, ki predstavlja prazno mrežo.  
 [*----------------------------------------------------------------------------*)
 
+<<<<<<< HEAD
 let empty_row = (None, None, None)
 let empty_grid : grid = (empty_row, empty_row, empty_row) (* DOPOLNI ME *)
+=======
+let empty_row : row = (None, None, None)
+let empty_grid : grid = (empty_row, empty_row, empty_row)
+>>>>>>> c2d130e450ac62cf1d9467eb2e13d4f9db10938f
 
 (*----------------------------------------------------------------------------*]
  Ker je mreža fiksne velikosti 3x3 lahko definiramo poseben tip za številčenje.
@@ -62,16 +71,29 @@ type index = Zero | One | Two
  trojico, ki ima primerno polje posodobljeno na podano vrednost.
 [*----------------------------------------------------------------------------*)
 
+<<<<<<< HEAD
 let get_index index (x0, x1, x2) = match index with
+=======
+let get_index index (x0, x1, x2) =
+  match index with
+>>>>>>> c2d130e450ac62cf1d9467eb2e13d4f9db10938f
   | Zero -> x0
   | One -> x1
   | Two -> x2
 
+<<<<<<< HEAD
 
 let set_index index x (x0, x1, x2) = match index with
 | Zero -> (x, x1, x2)
 | One -> (x0, x, x2)
 | Two -> (x0, x1, x)
+=======
+let set_index index x (x0, x1, x2) = 
+  match index with
+  | Zero -> (x, x1, x2)
+  | One -> (x0, x, x2)
+  | Two -> (x0, x1, x)
+>>>>>>> c2d130e450ac62cf1d9467eb2e13d4f9db10938f
 
 (*----------------------------------------------------------------------------*]
  Funkcija [get_field] vrne vrednost polja v mreži, ki ga določata podana
@@ -97,6 +119,7 @@ let set_field (row_i : index) (col_i : index) x grid =
  funkcija [is_full_grid] pa preveri zapolnjenost mreže.
 [*----------------------------------------------------------------------------*)
 
+<<<<<<< HEAD
 let is_full_row row = match row with  
   | (Some _, Some _, Some _) -> true
   | _ -> false
@@ -110,11 +133,16 @@ a = 3
 b = 3
 tu velja a=b
 toda ne velja a==b*)
+=======
+let is_full_row = function
+  | Some _, Some _, Some _ -> true
+  | _ -> false
+>>>>>>> c2d130e450ac62cf1d9467eb2e13d4f9db10938f
 
 let is_full_grid grid =
-    let (r1, r2, r3) = grid in
-    (* Preklopimo na seznam, da lahko uporabimo knjižnico *)
-    List.for_all is_full_row [r1; r2; r3]
+  let (r1, r2, r3) = grid in
+  (* Preklopimo na seznam, da lahko uporabimo knjižnico *)
+  List.for_all is_full_row [r1; r2; r3]
 
 (*----------------------------------------------------------------------------*]
  Funkcija [winner_of_triple] preveri ali je kateri od igralcev zmagal v treh
@@ -128,6 +156,7 @@ let is_full_grid grid =
  seznam vseh možnosti in preveri seznam.
 [*----------------------------------------------------------------------------*)
 
+<<<<<<< HEAD
 (*sprejme argument triple in vrne argument vrste player option*)
 let winner_of_triple triple : player option = match triple with
   | (Some X, Some X, Some X) -> Some X
@@ -144,6 +173,21 @@ let rec winner_of_list triples : player option = match triples with
     | Some x -> Some x (*nujno mali x, ker je karkoli*)
     | None -> winner_of_list rest
   )
+=======
+let winner_of_triple = function
+  | Some X, Some X, Some X -> Some X
+  | Some O, Some O, Some O -> Some O
+  | _ -> None
+
+let winner_of_list triples : player option =
+  let folder acc triple =
+    match acc with
+    | Some p -> acc
+    | None -> winner_of_triple triple
+  in
+  List.fold_left folder None triples
+
+>>>>>>> c2d130e450ac62cf1d9467eb2e13d4f9db10938f
 let winner_of_grid grid =
   (* Pripravimo si vse trojice, kjer bi lahko dosegli tri v vrsto. *)
   let (a00, a01, a02), (a10, a11, a12), (a20, a21, a22) = grid in
@@ -179,9 +223,13 @@ type state =
   | OnTurn of {player : player; grid : grid} 
   | GameOver of {result : result; final_grid : grid}
 
+<<<<<<< HEAD
 let initial_state : state = OnTurn{
   player = X; grid = empty_grid
 }  (* in dodaj anotacijo [: state] *) 
+=======
+let initial_state : state = OnTurn {player = X; grid = empty_grid}
+>>>>>>> c2d130e450ac62cf1d9467eb2e13d4f9db10938f
 
 (*----------------------------------------------------------------------------*]
  Funkcija [other_player] sprejme igralca in vrne njegovega nasprotnika.
@@ -192,7 +240,11 @@ let initial_state : state = OnTurn{
  in vrne posodobljeno stanje. 
 [*----------------------------------------------------------------------------*)
 
+<<<<<<< HEAD
 let other_player player = match player with X -> O | O -> X
+=======
+let other_player = function X -> O | O -> X
+>>>>>>> c2d130e450ac62cf1d9467eb2e13d4f9db10938f
 
 let place_token player grid (row_i, col_i) : state =
   (* [updated_grid] je mreža, kjer je na mestu določenim z [row_i] in [col_i]
@@ -208,11 +260,19 @@ let place_token player grid (row_i, col_i) : state =
   | None (* grid is full *) ->
       (* Ni bilo zmagovalca, vendar so vsa polja polna. Vrnemo [GameOver] z
       novo mrežo in oznako za neodločen izid. *)
+<<<<<<< HEAD
       GameOver {result=Tie; final_grid=updated_grid;}
   | Some player ->
       (* Dobili smo zmagovalca, torej vrnemo [GameOver] z novo mrežo in
       zmagovalcem *)
       GameOver {result=Winner player; final_grid=updated_grid;}
+=======
+      GameOver {result = Tie; final_grid = updated_grid}
+  | Some p ->
+      (* Dobili smo zmagovalca, torej vrnemo [GameOver] z novo mrežo in
+      zmagovalcem *)
+      GameOver {result = Winner p; final_grid = updated_grid}
+>>>>>>> c2d130e450ac62cf1d9467eb2e13d4f9db10938f
 
 
 (*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*]
@@ -240,7 +300,11 @@ let place_token player grid (row_i, col_i) : state =
  mrežo ter trenutno situacijo (kdo je na potezi, kdo je zmagal).
 [*----------------------------------------------------------------------------*)
 
+<<<<<<< HEAD
 let show_player player = match player with X -> "O" | O -> "X"
+=======
+let show_player = function X -> "X" | O -> "O"
+>>>>>>> c2d130e450ac62cf1d9467eb2e13d4f9db10938f
 
 let show_field = function
   | None -> " "
@@ -261,7 +325,15 @@ let show_state = function
   | OnTurn {player; grid} ->
       "Na potezi je: " ^ show_player player ^ "\n" ^ show_grid grid ^ "\n"
   | GameOver {result; final_grid} ->
+<<<<<<< HEAD
       let winner_message = (match result with Tie -> "Ni zmagovalca" | Winner p-> show_player p) in
+=======
+      let winner_message = 
+        match result with
+        | Tie -> "Ni zmagovalca!"
+        | Winner p -> "Zmagal je " ^ show_player p ^ "!"
+      in
+>>>>>>> c2d130e450ac62cf1d9467eb2e13d4f9db10938f
       winner_message ^ "\n" ^ show_grid final_grid ^ "\n"
 
 (*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*]
@@ -276,12 +348,19 @@ let show_state = function
  (stolpec ali vrstico). Nato prebere izbiro, in jo poskusi pretvoriti v indeks.
  Če vnos ni primeren, proces ponovi.
 [*----------------------------------------------------------------------------*)
+<<<<<<< HEAD
 let string_to_index s = match s with
+=======
+let string_to_index = function
+>>>>>>> c2d130e450ac62cf1d9467eb2e13d4f9db10938f
   | "0" -> Some Zero
   | "1" -> Some One
   | "2" -> Some Two
   | _ -> None
+<<<<<<< HEAD
 
+=======
+>>>>>>> c2d130e450ac62cf1d9467eb2e13d4f9db10938f
 
 let rec choose kind =
   (* Sporočilo kaj želimo. *)
@@ -310,6 +389,7 @@ let rec choose kind =
      nespremenjeno. V obeh primerih ponovno požene zanko, da se igra nadaljuje.
 [*----------------------------------------------------------------------------*)
 
+<<<<<<< HEAD
 let rec loop state = 
   print_string (show_state state);
   match state with
@@ -325,6 +405,20 @@ let rec loop state =
       loop new_state
     |Some _ -> loop state
   )
+=======
+let rec loop state =
+  print_string (show_state state);
+  match state with
+  | GameOver _ -> ()
+  | OnTurn {player; grid} ->
+      let row_i = choose "vrstico" in
+      let col_i = choose "stolpec" in
+      match get_field row_i col_i grid with
+      | None -> 
+          let updated_state = place_token player grid (row_i, col_i) in
+          loop updated_state
+      | Some _ -> loop state
+>>>>>>> c2d130e450ac62cf1d9467eb2e13d4f9db10938f
 
 (*----------------------------------------------------------------------------*]
  Funkcija [play_game] požene svežo igro.

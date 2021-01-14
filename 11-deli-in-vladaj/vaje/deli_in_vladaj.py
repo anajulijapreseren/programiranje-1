@@ -1,3 +1,5 @@
+import random
+
 ###############################################################################
 # Želimo definirati pivotiranje na mestu za tabelo [a]. Ker bi želeli
 # pivotirati zgolj dele tabele, se omejimo na del tabele, ki se nahaja med
@@ -54,6 +56,58 @@ def pivot(a, start, end):
     a[start], a[left-1]=a[left-1], a[start]
     return left # lahko bi vrnili tudi desnega, saj sta ista
 
+def pivot(a, start, end):
+    if start == end:
+        return start
+
+    pivot = a[start]
+    first_bigger = start+1  # the index of the first element bigger than pivot
+
+    for i in range(start+1, end+1):
+        if a[i] < pivot:
+            # switch smaller element with first bigger and update index
+            a[first_bigger], a[i] = a[i], a[first_bigger]
+            first_bigger += 1
+
+    # switch pivot with last smaller (which is just before the first bigger)
+    a[start], a[first_bigger-1] = a[first_bigger-1], a[start]
+    return first_bigger-1
+
+
+def pivot_alternative(a, start, end):
+    p = a[start]
+    left = start
+    right = end
+    
+    while left < right:
+        if a[left+1] <= p: # Move left inside
+            left += 1
+        elif p < a[right]: # Move right inside
+            right -= 1
+        else: # Swap
+            a[left+1], a[right] = a[right], a[left+1]
+
+    # Put pivot in the correct place
+    a[start], a[left] = a[left], a[start]
+    return left
+
+
+def test_pivot(n, max_l, max_k):
+    """ Performs a series of randomised tests on the pivot algorithm. """
+    for _ in range(n):
+        l = random.randint(0, max_l)
+        a_orig = [random.randint(-max_k, max_k) for _ in range(l)]
+        for j in range(l):
+            a = a_orig[:]
+            left = random.randint(0, j)
+            right = random.randint(j, l-1)
+            p = a[left]
+            print(a, left, right)
+            ind = pivot(a, left, right)
+            if (a[ind] != p or any([j > p for j in a[left:ind]]) or any([j < p for j in a[ind:right+1]]) 
+                or any(a[j] != a_orig[j] for j in range(0, left)) or any(a[j] != a_orig[j] for j in range(right+1, len(a)))) :
+                return a_orig, a, left, right, ind
+
 ###############################################################################
 # V tabeli želimo poiskati vrednost k-tega elementa po velikosti.
 #
@@ -82,6 +136,39 @@ def kth_element(a, k):
         return None
     return k_ti_po_vrsti(a, k, 0, len(a)-1)
 
+def kth_el_part(a, k, start, end):
+    if start > end:
+        return None
+    else:
+        pivot_i = pivot(a, start, end)
+        if pivot_i == k:
+            return a[pivot_i]
+        elif pivot_i > k:
+            return kth_el_part(a, k, start, pivot_i - 1)
+        else:
+            return kth_el_part(a, k, pivot_i + 1, end)
+
+
+def kth_element(a, k):
+    if k > len(a):
+        return None
+    else:
+        return kth_el_part(a, k, 0, len(a)-1)
+
+
+def test_quickselect(n, max_l, max_k):
+    """ Performs a series of randomised tests on the pivot algorithm. """
+    for _ in range(n):
+        l = random.randint(0, max_l)
+        a_orig = [random.randint(-max_k, max_k) for _ in range(l)]
+        sor = sorted(a_orig)
+        for j in range(l):
+            a = a_orig[:]
+            val = kth_element(a, j)
+            if val != sor[j]:
+                return a_orig, j, val, sor[j]
+
+
 ###############################################################################
 # Tabelo a želimo urediti z algoritmom hitrega urejanja (quicksort).
 #
@@ -105,6 +192,31 @@ def quicksort(a, start=0, stop= None):
     pivot_i = pivot(a, start, stop)
     quicksort(a, start, pivot_i - 1)
     quicksort(a, pivot_i + 1, stop)
+
+def quicksort_part(a, start, end):
+    if start >= end:
+        return
+    else:
+        pivot_i = pivot(a, start, end)
+        quicksort_part(a, start, pivot_i - 1)
+        quicksort_part(a, pivot_i + 1, end)
+        return
+
+
+def quicksort(a):
+    quicksort_part(a, 0, len(a) - 1)
+    return
+
+
+def test_quicksort(n, max_l, max_k):
+    """ Performs a series of randomised tests on the quicksort algorithm. """
+    for _ in range(n):
+        l = random.randint(0, max_l)
+        a = [random.randint(-max_k, max_k) for _ in range(l)]
+        a_quicksort = a[:]
+        quicksort(a_quicksort)
+        if a_quicksort != sorted(a):
+            return a
 
 ###############################################################################
 # Če imamo dve urejeni tabeli, potem urejeno združeno tabelo dobimo tako, da
