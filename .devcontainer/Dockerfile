@@ -9,7 +9,9 @@ ENV PATH="/opt/venv/bin:$PATH"
 RUN python -m pip install --upgrade pip
 # For faster instalation
 RUN pip install wheel
-RUN pip install --no-cache-dir --no-warn-script-location pandas numpy jupyter requests matplotlib dash jupyter-book
+# Textbook generation requirements
+RUN pip install jupyter-book "jupytext==1.7.1" pandas matplotlib "sphinxcontrib-bibtex<2.0.0"
+RUN pip install --no-cache-dir --no-warn-script-location jupyter-book "jupytext==1.7.1" pandas matplotlib "sphinxcontrib-bibtex<2.0.0" numpy jupyter requests dash
 
 
 # Once this gets fixed: https://discuss.ocaml.org/t/psa-ocaml-opam2-docker-images-updated-to-4-08-0-release/3948
@@ -19,6 +21,12 @@ RUN pip install --no-cache-dir --no-warn-script-location pandas numpy jupyter re
 FROM ocurrent/opam:debian-10-ocaml-${OCAML_VERSION}
 # Redeclare arg: https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
 ARG OCAML_VERSION
+
+# m4 needs sudo: https://hub.docker.com/repository/registry-1.docker.io/j00sko/programiranje1/builds/1ca4dc84-ad7f-4ca4-af49-4756f8f6e02e
+USER root
+RUN apt-get update
+RUN apt-get install -qq -yy libgmp-dev libzmq3-dev m4 perl pkg-config zlib1g-dev
+USER opam
 
 # Needed for merlin
 RUN opam update && opam depext --yes --install jupyter ocaml-lsp-server ocamlformat utop
